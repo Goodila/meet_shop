@@ -40,6 +40,14 @@ async def admin(message: types.Message, state: FSMContext):
         await message.answer('Вы админ', reply_markup=markup)
 
 
+async def contacts(message: types.Message):
+    markup = await back_keyboard()
+    text = """Для связи с нами:
+Татьяна: (TG, WhatsApp) +7 966 072 7281 
+Андрей: (TG, WhatsApp) +7 963 643-39-48 """
+    await message.answer(text=text, reply_markup=markup)
+
+
 async def change_photo(call: types.CallbackQuery, state: FSMContext):
     await state.set_state(Change.Photo.state)
     markup = await content_keyboard('jpg')
@@ -251,6 +259,7 @@ def registration_handlers(dp: Dispatcher):
     dp.register_callback_query_handler(start_delivery, text='delivery')
     dp.register_callback_query_handler(change_photo, text='change_photo')
     dp.register_callback_query_handler(change_menu, text='change_menu')
+    dp.register_callback_query_handler(contacts, text='contacts')
     dp.register_callback_query_handler(categories)
 #     #States
         #Name
@@ -265,102 +274,3 @@ def registration_handlers(dp: Dispatcher):
     dp.register_message_handler(change_photo_3, content_types='photo' ,state=Change.Photo_download)
     dp.register_callback_query_handler(change_text_2, state=Change.Text)
     dp.register_message_handler(change_text_3, state=Change.Text_download)
-
-#     dp.register_message_handler(work_name, state=Work.Name)
-#     dp.register_message_handler(work_age, state=Work.Age)
-#     dp.register_message_handler(work_post, state=Work.Post)
-#     dp.register_message_handler(work_why, state=Work.Why)
-#     dp.register_message_handler(work_know_from, state=Work.Know_from)
-#     dp.register_message_handler(work_resume, state=Work.Link_resume)
-#     dp.register_message_handler(work_case, state=Work.Link_case)
-#     dp.register_message_handler(work_load, state=Work.Load)
-#         #Бартер
-#     dp.register_message_handler(barter_name, state=Barter.Name)
-#     dp.register_message_handler(barter_number, state=Barter.Number)
-#     dp.register_message_handler(barter_link, state=Barter.Link)
-#     dp.register_message_handler(barter_subs, state=Barter.Subs)
-#     dp.register_message_handler(barter_city, state=Barter.City)
-#         #Менеджер
-#     dp.register_message_handler(manager_number, state=Manager.Number)
-#     dp.register_message_handler(manager_name, state=Manager.Name)
-#     dp.register_message_handler(manager_link, state=Manager.Link)
-#     dp.register_message_handler(manager_q, state=Manager.Q)
-#         #Сотрудничество
-#     dp.register_message_handler(colab_name, state=Colab.Name)
-#     dp.register_message_handler(colab_post, state=Colab.Post)
-#     dp.register_message_handler(colab_company, state=Colab.Company)
-#     dp.register_message_handler(colab_reason, state=Colab.Reason)
-#     dp.register_message_handler(colab_number, state=Colab.Number)
-#         #Instagram
-#     dp.register_message_handler(inst_number, state=Instagram.Number)
-#     dp.register_message_handler(inst_number_wait, state=Instagram.Wait)
-#     dp.register_message_handler(inst_link, state=Instagram.Link)
-#     dp.register_callback_query_handler(inst_topic_choose, state=Instagram.Topic, text_startswith='Topic')
-#     dp.register_callback_query_handler(inst_topic_choose_2, state=Instagram.Topic, text_startswith='topic')
-#     dp.register_message_handler(inst_topic_another, state=Instagram.Topic_another)
-#     dp.register_message_handler(inst_subs, state=Instagram.Subs)
-#     dp.register_message_handler(inst_descroption, state=Instagram.Description)
-#     dp.register_message_handler(inst_city, state=Instagram.City)
-#     dp.register_message_handler(inst_stories, state=Instagram.Stories)
-#     dp.register_message_handler(inst_stories_scope, state=Instagram.Stories_scope)
-#     dp.register_message_handler(inst_reels, state=Instagram.Reels)
-#     dp.register_message_handler(inst_reels_scope, state=Instagram.Reels_scope)
-#     dp.register_message_handler(inst_statistic, state=Instagram.Statistic)
-#         #YouTube
-#     dp.register_message_handler(yt_number, state=YT.Number)
-#     dp.register_message_handler(yt_number_wait, state=YT.Wait)
-#     dp.register_message_handler(yt_link, state=YT.Link)
-#     dp.register_callback_query_handler(yt_topic_choose, state=YT.Topic, text_startswith='Topic')
-#     dp.register_callback_query_handler(yt_topic_choose_2, state=YT.Topic, text_startswith='topic')
-#     dp.register_message_handler(yt_topic_another, state=YT.Topic_another)
-#     dp.register_message_handler(yt_subs, state=YT.Subs)
-#     dp.register_message_handler(yt_descroption, state=YT.Description)
-#     dp.register_message_handler(yt_country, state=YT.Country)
-#     dp.register_message_handler(yt_shorts, state=YT.Shorts)
-#     dp.register_message_handler(yt_shorts_views, state=YT.Shorts_views)
-#     dp.register_message_handler(yt_video, state=YT.Video)
-#     dp.register_message_handler(yt_video_views, state=YT.Video_views)
-#     dp.register_message_handler(yt_statistic, state=YT.Statistic)
-#         #VK
-#     dp.register_message_handler(vk_number, state=VK.Number)
-#     dp.register_message_handler(vk_number_wait, state=VK.Wait)
-#     dp.register_message_handler(vk_link, state=VK.Link)
-#     dp.register_callback_query_handler(vk_topic_choose, state=VK.Topic, text_startswith='Topic')
-#     dp.register_callback_query_handler(vk_topic_choose_2, state=VK.Topic, text_startswith='topic')
-#     dp.register_message_handler(vk_topic_another, state=VK.Topic_another)
-#     dp.register_message_handler(vk_subs, state=VK.Subs)
-#     dp.register_message_handler(vk_descroption, state=VK.Description)
-#     dp.register_message_handler(vk_country, state=VK.Country)
-#     dp.register_message_handler(vk_post, state=VK.Post)
-#     dp.register_message_handler(vk_post_views, state=VK.Post_views)
-#     dp.register_message_handler(vk_clip, state=VK.Clip)
-#     dp.register_message_handler(vk_clip_views, state=VK.Clip_views)
-#     dp.register_message_handler(vk_statistic, state=VK.Statistic)
-#         #TG
-#     dp.register_message_handler(tg_number, state=TG.Number)
-#     dp.register_message_handler(tg_number_wait, state=TG.Wait)
-#     dp.register_message_handler(tg_link, state=TG.Link)
-#     dp.register_callback_query_handler(tg_topic_choose, state=TG.Topic, text_startswith='Topic')
-#     dp.register_callback_query_handler(tg_topic_choose_2, state=TG.Topic, text_startswith='topic')
-#     dp.register_message_handler(tg_topic_another, state=TG.Topic_another)
-#     dp.register_message_handler(tg_subs, state=TG.Subs)
-#     dp.register_message_handler(tg_post_view, state=TG.Post_views)
-#     dp.register_message_handler(tg_post, state=TG.Post)
-#     dp.register_message_handler(tg_country, state=TG.Country)
-#     dp.register_message_handler(tg_description, state=TG.Description)
-#     dp.register_message_handler(tg_statistic, state=TG.Statistic)
-#         #Dzen
-#     dp.register_message_handler(dz_number, state=DZ.Number)
-#     dp.register_message_handler(dz_number_wait, state=DZ.Wait)
-#     dp.register_message_handler(dz_link, state=DZ.Link)
-#     dp.register_callback_query_handler(dz_topic_choose, state=DZ.Topic, text_startswith='Topic')
-#     dp.register_callback_query_handler(dz_topic_choose_2, state=DZ.Topic, text_startswith='topic')
-#     dp.register_message_handler(dz_topic_another, state=DZ.Topic_another)
-#     dp.register_message_handler(dz_subs, state=DZ.Subs)
-#     dp.register_message_handler(dz_post_view, state=DZ.Post_views)
-#     dp.register_message_handler(dz_post, state=DZ.Post)
-#     dp.register_message_handler(dz_description, state=DZ.Description)
-#     dp.register_message_handler(dz_statistic, state=DZ.Statistic)
-        #Контакты
-    # dp.register_callback_query_handler(contacts, text_startswith='contacts')
-
