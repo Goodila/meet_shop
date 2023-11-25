@@ -40,13 +40,13 @@ async def content_keyboard(string) -> InlineKeyboardMarkup:
     return markup
 
 
-async def back_keyboard(start=False) -> InlineKeyboardMarkup:
+async def back_keyboard(start=False, text='Отменить регистрацию') -> InlineKeyboardMarkup:
     buttons = [
         InlineKeyboardButton(text=f'Назад', callback_data='menu'),
     ]
     if start:
         buttons = [
-            InlineKeyboardButton(text=f'Отменить регистрацию', callback_data='start'),
+            InlineKeyboardButton(text=f'{text}', callback_data='start'),
         ]
 
     markup = InlineKeyboardMarkup(row_width=1)
