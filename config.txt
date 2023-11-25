@@ -1,6 +1,4 @@
 
 {
-    "TOKEN": "6433841928:AAGALNsZt3pJlnc2lANgt5pXGy48afYKRyE",
-    "ADMIN_ID": ["1039316467", "1292810103"],
-    "BOT_ID": "5259442386"
+    "TOKEN": "top secret info(("
 }
