@@ -41,7 +41,7 @@ async def admin(message: types.Message, state: FSMContext):
 
 
 async def contacts(message: types.Message):
-    markup = await back_keyboard()
+    markup = await back_keyboard(start=True)
     text = """Для связи с нами:
 Татьяна: (TG, WhatsApp) +7 966 072 7281 
 Андрей: (TG, WhatsApp) +7 963 643-39-48 """
