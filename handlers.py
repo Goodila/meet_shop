@@ -45,7 +45,7 @@ async def contacts(message: types.Message):
     text = """Для связи с нами:
 Татьяна: (TG, WhatsApp) +7 966 072 7281 
 Андрей: (TG, WhatsApp) +7 963 643-39-48 """
-    await message.answer(text=text, reply_markup=markup)
+    await message.message.answer(text=text, reply_markup=markup)
 
 
 async def change_photo(call: types.CallbackQuery, state: FSMContext):
