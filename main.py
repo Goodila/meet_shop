@@ -2,7 +2,7 @@ from aiogram import Bot, Dispatcher
 import asyncio
 import logging
 from funcs import get_config
-
+# 1039316467, 1292810103
 
 
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
@@ -21,7 +21,7 @@ async def start():
     # регистрируем хендлеры
     registration_handlers(dp)
     # регистрируем мидлвари
-    await registration_midl(dp)
+    # await registration_midl(dp)
 
     try:
         await dp.start_polling(bot)
