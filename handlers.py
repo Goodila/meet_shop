@@ -7,7 +7,9 @@ from funcs import get_config, Client
 from asyncio import sleep
 # 6500743193:AAEv7C1MescqsmCa979OptxW3qOMPRs9i2s
 
-async def start(message: types.Message):
+async def start(message: types.Message, state: FSMContext=None):
+    if state:
+        await state.finish()
     with open('content/menu/время доставки.txt', 'r', encoding='utf-8') as f:
         time = f.read()
     text = f'''
@@ -67,7 +69,7 @@ async def change_photo_3(message: types.Message, state: FSMContext):
     await message.photo[-1].download(f'content/photo/{file}.jpg')
     await message.answer('фото заменено')
     await state.finish()
-    await start(message)
+    await start(message, state=state)
 
 
 async def change_menu(call: types.CallbackQuery, state: FSMContext):
@@ -107,6 +109,7 @@ async def menu(message: types.Message):
 
 async def categories(call: types.CallbackQuery):
     ''' выбор любой категории '''
+    print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
     with open('content/menu/меню.txt', 'r', encoding='utf-8') as f:
         menu = f.read()
         lst = menu.split('\n')
@@ -118,7 +121,13 @@ async def categories(call: types.CallbackQuery):
     photo = types.InputFile(f'content/photo/{call.data}.jpg')
     markup = await back_keyboard()
     await call.bot.delete_message(call.message.chat.id, call.message.message_id)
-    await call.bot.send_photo(call.from_user.id, photo, caption=text, reply_markup=markup)
+    try:
+        await call.bot.send_photo(call.from_user.id, photo, caption=text, reply_markup=markup)
+    except:
+        photo = types.InputFile(f'content/photo/{call.data}.jpg')
+        await call.bot.send_photo(call.from_user.id, photo, caption='')
+        print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&')
+        await call.bot.send_message(call.from_user.id, text=text, reply_markup=markup)
 
 
 async def start_delivery(call: types.CallbackQuery, state: FSMContext):
@@ -156,42 +165,6 @@ async def order_name(call: types.CallbackQuery, state: FSMContext):
     markup = await back_keyboard(start=True)
     await call.answer(text, reply_markup=markup)
     await state.set_state(Order.Number.state)
-
-
-# async def order_name(call: types.CallbackQuery, state: FSMContext):
-#     ''' обработка клавиатуры name '''
-#     if isinstance(call, types.Message):
-#         await state.update_data(name=call.text)
-#         text = '''*Укажите номер телефона для связи*''' 
-#         Client(call.from_user.id).record_stuff("name", f'{call.text}')
-#         markup = await back_keyboard(start=True)
-#         await call.bot.delete_message(call.chat.id, call.message_id)
-#         await call.answer(text=text, reply_markup=markup)
-#         await state.set_state(Order.Number.state)
-#         await call.bot.delete_message(call.chat.id, call.message_id-1)
-#         return
-#     if call.data == 'name_да':
-#         name = Client(call.from_user.id).get_stuff('name')
-#         await state.update_data(name=name)
-#         text = '''*Укажите номер телефона для связи*''' 
-#     elif call.data == 'name_нет':
-#         text = '*Укажите имя, на которое будет осуществлена доставка*' 
-#         markup = await back_keyboard(start=True)
-#         await call.bot.delete_message(call.message.chat.id, call.message.message_id)
-#         await call.message.answer(text=text, reply_markup=markup)
-#         return
-#     elif call.data == 'start':
-#         await state.finish()
-#         await start(call)
-#         return
-#     else:
-#         text = 'ЧТО ТО ПОШЛО НЕ ТАК'
-#         await call.message.answer(text=text)
-#         await start(call)
-#         await state.finish()
-#     markup = await back_keyboard(start=True)
-#     await call.bot.delete_message(call.message.chat.id, call.message.message_id)
-#     await call.message.answer(text=text, reply_markup=markup)
 
 
 async def order_number(call: types.CallbackQuery, state: FSMContext):
