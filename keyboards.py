@@ -31,8 +31,7 @@ async def content_keyboard(string) -> InlineKeyboardMarkup:
     lst = glob(f'content/{s}/*.{string}')
     print(lst)
     for i in lst:
-        i = i.split('\\')[-1].split('.')[0]
-        print(i)
+        i = i.split('/')[-1].split('.')[0]
         button = InlineKeyboardButton(text=i, callback_data=f'{i}')
         markup.add(button)
     button = InlineKeyboardButton(text="Назад", callback_data='start')
@@ -75,55 +74,6 @@ async def name_keyboard(string) -> InlineKeyboardMarkup:
     return markup
 
 
-#ARCHIVE
-async def colab_keyboard() -> InlineKeyboardMarkup:
-    buttons = [
-        InlineKeyboardButton(text='Бартер', callback_data='barter'),
-        InlineKeyboardButton(text='Я мнеджер блогеров, хочу сотрудничать с ЕРА', callback_data='manager'),
-        InlineKeyboardButton(text='Сотрудничетсво с ЕРА', callback_data='colab_start'),
-        InlineKeyboardButton(text='Назад', callback_data='start')
-    ]
-    markup = InlineKeyboardMarkup(row_width=1)
-    markup.add(*buttons)
-    return markup
-
-
-async def manager_keyboard() -> ReplyKeyboardMarkup:
-    buttons = [
-        KeyboardButton(text='Да✅'),
-        KeyboardButton(text='Нет❌')
-    ]
-    markup = ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
-    markup.add(*buttons)
-    return markup
-
-
-async def bloger_keyboard() -> InlineKeyboardMarkup:
-    buttons = [
-        InlineKeyboardButton(text='Instagram', callback_data='Instagram'),
-        InlineKeyboardButton(text='YouTube', callback_data='YT'),
-        InlineKeyboardButton(text='VK', callback_data='VK'),
-        InlineKeyboardButton(text='Telegram', callback_data='TG'),
-        InlineKeyboardButton(text='Дзен', callback_data='Дзен'),
-        InlineKeyboardButton(text='Назад', callback_data='start')
-    ]
-    markup = InlineKeyboardMarkup(row_width=1)
-    markup.add(*buttons)
-    return markup
-
-
-
-
-
-
-async def topic_keyboard_2() -> InlineKeyboardMarkup:
-    buttons = [
-        InlineKeyboardButton(text='Выбрать еще категорию', callback_data='topic_start'),
-        InlineKeyboardButton(text='✅Закончить выбор', callback_data='topic_end'),
-    ]
-    markup = InlineKeyboardMarkup(row_width=1)
-    markup.add(*buttons)
-    return markup
 
 
 

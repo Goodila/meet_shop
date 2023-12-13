@@ -109,7 +109,6 @@ async def menu(message: types.Message):
 
 async def categories(call: types.CallbackQuery):
     ''' выбор любой категории '''
-    print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
     with open('content/menu/меню.txt', 'r', encoding='utf-8') as f:
         menu = f.read()
         lst = menu.split('\n')
@@ -126,7 +125,6 @@ async def categories(call: types.CallbackQuery):
     except:
         photo = types.InputFile(f'content/photo/{call.data}.jpg')
         await call.bot.send_photo(call.from_user.id, photo, caption='')
-        print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&')
         await call.bot.send_message(call.from_user.id, text=text, reply_markup=markup)
 
 
