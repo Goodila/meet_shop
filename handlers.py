@@ -27,7 +27,9 @@ async def start(message: types.Message, state: FSMContext=None):
     markup = await start_keyboard()
     photo = types.InputFile('content/photo/приветствие.jpg')
     await message.bot.send_photo(message.from_user.id, photo, caption=text, reply_markup=markup)
-    
+    client = Client(message.from_user.id)
+    print(client.check()) 
+
 
 async def back_start(message: types.Message):
     ''' старт после отмены регистрации'''

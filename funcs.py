@@ -58,11 +58,27 @@ class Client:
             return blogers[self.id][key]
         
 
+class Client:
+    def __init__(self, id):
+        self.id = id
+
+    
+    def check(self):
+        with open("clients.json", "r+") as read_file:
+            clients = json.load(read_file)
+            if not self.id in clients:  
+                clients[self.id] = ""
+                self.record(clients)
 
 
-
-
+    def record(self, data):
+        with open("clients.json", "w") as read_file:
+            json.dump(data, read_file, indent=4)
         
+
+
+
+
 # async def events_fomer(events_data: list):
 #     '''формирует список мероприятий в текст'''
 #     res = ''
