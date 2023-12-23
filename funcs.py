@@ -67,16 +67,47 @@ class Client:
         with open("clients.json", "r+") as read_file:
             clients = json.load(read_file)
             if not self.id in clients:  
-                clients[self.id] = ""
+                clients[self.id] = []
                 self.record(clients)
 
 
     def record(self, data):
         with open("clients.json", "w") as read_file:
             json.dump(data, read_file, indent=4)
+
+    
+    @staticmethod
+    def record_product(data, id):
+        with open("clients.json", "r") as read_file:
+            clients = json.load(read_file)
+            try:
+                clients[id].append(data)
+            except:
+                pass
+        with open("clients.json", "w") as read_file:
+            json.dump(clients, read_file, indent=4)
         
 
+    @staticmethod
+    def get_order(id):
+        with open("clients.json", "r") as read_file:
+            clients = json.load(read_file)
+            order = clients[str(id)]
+        return "\n".join(order)
 
+
+    @staticmethod
+    def del_product(data, id):
+        with open("clients.json", "r") as read_file:
+            clients = json.load(read_file)
+            data = int(data[1:])
+            try:
+                s = clients[str(id)].pop(data-1)
+            except IndexError:
+                return "Произошла ошибка, возможно Вы ввели неверный номер продукта"
+        with open("clients.json", "w") as read_file:
+            json.dump(clients, read_file, indent=4)
+        return f"продукт {s} успешно удален из заказа"
 
 
 # async def events_fomer(events_data: list):

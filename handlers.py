@@ -218,6 +218,25 @@ async def order_time(call: types.CallbackQuery, state: FSMContext):
     await start(call)
 
 
+async def order_add(message: types.Message):
+    Client.record_product(message.text, str(message.from_user.id))
+    text = f"продукт {message.text} добавлен к заказу, позже, Вы сможете убрать его из заказа, если захотите"
+    await message.answer(text=text)
+
+
+async def order_get(message: types.Message):
+    text = f"{Client.get_order(message.from_user.id)}"
+    if text == "":
+        text = "Заказ пуст"
+    await message.answer(text=text)
+
+
+async def order_del(message: types.Message):
+    text = Client.del_product(message.text, message.from_user.id)
+    await message.answer(text=text)
+
+
+
 #РЕГИСТРАЦИЯ ХЕНДЛЕРОВ
 def registration_handlers(dp: Dispatcher):
     #Commands
@@ -247,3 +266,8 @@ def registration_handlers(dp: Dispatcher):
     dp.register_message_handler(change_photo_3, content_types='photo' ,state=Change.Photo_download)
     dp.register_callback_query_handler(change_text_2, state=Change.Text)
     dp.register_message_handler(change_text_3, state=Change.Text_download)
+        #Echoes
+    dp.register_message_handler(order_del, text_startswith='-')
+    dp.register_message_handler(order_get, text="заказ")
+    dp.register_message_handler(order_add)
+        
