@@ -6,7 +6,7 @@ from funcs import get_config
 # 6433841928:AAGALNsZt3pJlnc2lANgt5pXGy48afYKRyE
 
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
-from handlers import registration_handlers
+from handlers import registration_handlers, set_commands
 from midl import registration_midl
 config=get_config()
 bot = Bot(token=config.token, parse_mode='HTML')
@@ -24,6 +24,7 @@ async def start():
     # await registration_midl(dp)
 
     try:
+        await set_commands(bot)
         await dp.start_polling(bot)
     finally: 
         await bot.session.close()

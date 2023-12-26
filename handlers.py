@@ -1,5 +1,6 @@
 import os
 from aiogram import types, Dispatcher, types, filters
+from aiogram.types import BotCommand, BotCommandScopeDefault
 from keyboards import start_keyboard, menu_keyboard, back_keyboard, admin_keyboard, name_keyboard, content_keyboard, order_keyboard
 from aiogram.dispatcher import FSMContext
 from states import Order, Change
@@ -7,8 +8,27 @@ from funcs import get_config, Client
 from asyncio import sleep
 # 6500743193:AAEv7C1MescqsmCa979OptxW3qOMPRs9i2s
 
+
+async def set_commands(bot):
+    '''для установки команд'''
+    commands = [
+        BotCommand(
+            command='start',
+            description='Начало работы'
+        ),
+        BotCommand(
+            command='help',
+            description='Помощь'
+        ),
+        BotCommand(
+            command='order',
+            description='мой заказ'
+        )
+    ]
+    await bot.set_my_commands(commands, BotCommandScopeDefault())
+
+
 async def start(message: types.Message, state: FSMContext=None):
-    print('START START')
     if state:
         await state.finish()
     with open('content/menu/время доставки.txt', 'r', encoding='utf-8') as f:
@@ -29,6 +49,28 @@ async def start(message: types.Message, state: FSMContext=None):
     photo = types.InputFile('content/photo/приветствие.jpg')
     await message.bot.send_photo(message.from_user.id, photo, caption=text, reply_markup=markup)
 
+
+async def help(message: types.Message):
+    ''' вывод помощи'''
+    markup = await back_keyboard(start=True)
+    text = '''В разделе "Ассмортимент" можете ознакомиться с предлагаемой ппродукцией.
+
+Заказать доставку Вы можете через раздел "Заказать доставку".
+
+Если хотите вернуть самое первое меню воспользуйтесь командой /start.
+
+Для удобства выбора продукции, следуйте написанному ниже.
+
+1. Для добавления позиции в Ваш заказ, просто напишите сообщение боту, например, "колбаса столичная 200 гр."
+
+2. Чтобы посмотреть Ваш заказ, напишите боту "заказ" или воспользуйтесь опцией /order в меня слева.
+
+3. Чтобы удалить позицию из заказа, напишите боту -1 (так удалит первую позицию) или -2 и так далее.
+
+4. Ну или просто впишите всё, что хотите заказать одним сообщением в процессе оформления заказа.
+Хорошего дня!)
+'''
+    await message.answer(text=text, reply_markup=markup)
 
 
 async def back_start(message: types.Message):
@@ -122,13 +164,14 @@ async def categories(call: types.CallbackQuery):
     photo = types.InputFile(f'content/photo/{call.data}.jpg')
     markup = await back_keyboard()
     await call.bot.delete_message(call.message.chat.id, call.message.message_id)
+    text += '\n\nДля добавления позиции в Ваш заказ просто напишите сообщение боту, например, "колбаса столичная 200 гр."\nЧтобы посмотреть Ваш заказ, напишите боту "заказ" или воспользуйтесь опцией /order в меня слева.'
     try:
         await call.bot.send_photo(call.from_user.id, photo, caption=text, reply_markup=markup)
     except:
         photo = types.InputFile(f'content/photo/{call.data}.jpg')
         await call.bot.send_photo(call.from_user.id, photo, caption='')
         await call.bot.send_message(call.from_user.id, text=text, reply_markup=markup)
-
+    
 
 async def start_delivery(call: types.CallbackQuery, state: FSMContext):
     ''' старт опроса по доставке'''
@@ -232,12 +275,16 @@ async def order_get(message: types.Message, state: FSMContext):
     text = f"{Client.get_order(message.from_user.id)}"
     if text == "":
         text = "Заказ пуст"
-    await message.answer(text=text)
+    text += '\n\nЧтобы удалить позицию из заказа, напишите боту -1 (так удалит первую позицию) или -2 и так далее.'
+    text = 'Ваш заказ:\n' + text
+    markup = await back_keyboard(start=True, text='Назад в меню')
+    await message.answer(text=text, reply_markup=markup)
 
 
 async def order_del(message: types.Message, state: FSMContext):
     text = Client.del_product(message.text, message.from_user.id)
     await message.answer(text=text)
+    await order_get(message, state)
 
 
 async def product_del(call: types.CallbackQuery, state: FSMContext):
@@ -270,6 +317,8 @@ def registration_handlers(dp: Dispatcher):
     #Commands
     dp.register_message_handler(start, commands=['start'])
     dp.register_message_handler(admin, commands=['admin'])
+    dp.register_message_handler(order_get, commands=['order'])
+    dp.register_message_handler(help, commands=['help'])
     #Callbacks
     dp.register_callback_query_handler(menu, text='menu')
     dp.register_callback_query_handler(start, text='start')
@@ -282,7 +331,7 @@ def registration_handlers(dp: Dispatcher):
     dp.register_callback_query_handler(add_to_order, text="add_to_order", state='*')
     dp.register_callback_query_handler(product_del, filters.Text(startswith=["remove"]), state='*')
     dp.register_callback_query_handler(categories)
-#     #States
+    #States
         #Name
     dp.register_callback_query_handler(order_name, state=Order.Name)
     dp.register_message_handler(order_name, state=Order.Name)

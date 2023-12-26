@@ -108,8 +108,6 @@ class Client:
                     return "Произошла ошибка ("
             with open("clients.json", "w") as read_file:
                 json.dump(clients, read_file, indent=4)
-
-
         if in_order:
             with open("clients.json", "r") as read_file:
                 clients = json.load(read_file)
@@ -122,11 +120,6 @@ class Client:
                 json.dump(clients, read_file, indent=4)
                 return text
             return f"продукт {s} успешно удален из заказа"
-
-
-
-
-
         else:
             with open("clients.json", "r") as read_file:
                 clients = json.load(read_file)

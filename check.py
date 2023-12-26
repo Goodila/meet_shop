@@ -1,2 +1,3 @@
-lst = ['content/menu/сырокопченые колбасы.txt', 'content/menu/охлажденные полуфабрикаты.txt', 'content/menu/время доставки.txt', 'content/menu/студни, паштеты, сосиски, сардельки.txt', 'content/menu/меню.txt', 'content/menu/деликатесы.txt', 'content/menu/вареные и варено-копченые колбасы.txt', 'content/menu/молочная продукция.txt', 'content/menu/замороженные полуфабрикаты.txt']
-print(lst[0].split('/')[0])
+string = 'text text\ntext text'
+string = 'TEXT\n' + string 
+print(string)
