@@ -52,7 +52,7 @@ async def start(message: types.Message, state: FSMContext=None):
 
 async def help(message: types.Message):
     ''' вывод помощи'''
-    markup = await back_keyboard(start=True)
+    markup = await back_keyboard(start=True, text='Назад')
     text = '''В разделе "Ассмортимент" можете ознакомиться с предлагаемой ппродукцией.
 
 Заказать доставку Вы можете через раздел "Заказать доставку".
