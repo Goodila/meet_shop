@@ -255,10 +255,10 @@ async def order_time(call: types.CallbackQuery, state: FSMContext):
     await state.update_data(time=call.text)
     order_text = f'''Поступил заказ!
 @{order['username']} {order['name']}
-{order['number']}
-{order['address']}
-{order['products']}
-{order['time']}'''
+тел: {order['number']}
+адрес: {order['address']}
+заказ: {order['products']}
+дата, время: {order['time']}'''
     admins = get_config().admins
     for i in admins:
         await call.bot.send_message(int(i), order_text)
