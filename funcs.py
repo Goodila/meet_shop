@@ -66,7 +66,8 @@ class Client:
     def check(self):
         with open("clients.json", "r+") as read_file:
             clients = json.load(read_file)
-            if not self.id in clients:  
+            print(clients, self.id, self.id in clients)
+            if not str(self.id) in clients:  
                 clients[self.id] = []
                 self.record(clients)
 
@@ -97,17 +98,46 @@ class Client:
 
 
     @staticmethod
-    def del_product(data, id):
-        with open("clients.json", "r") as read_file:
-            clients = json.load(read_file)
-            data = int(data[1:])
-            try:
-                s = clients[str(id)].pop(data-1)
-            except IndexError:
-                return "Произошла ошибка, возможно Вы ввели неверный номер продукта"
-        with open("clients.json", "w") as read_file:
-            json.dump(clients, read_file, indent=4)
-        return f"продукт {s} успешно удален из заказа"
+    def del_product(data, id, in_order=False):
+        if in_order == 'clear':
+            with open("clients.json", "r") as read_file:
+                clients = json.load(read_file)
+                try:
+                    clients[id] = []
+                except IndexError:
+                    return "Произошла ошибка ("
+            with open("clients.json", "w") as read_file:
+                json.dump(clients, read_file, indent=4)
+
+
+        if in_order:
+            with open("clients.json", "r") as read_file:
+                clients = json.load(read_file)
+                try:
+                    s = clients[str(id)].remove(data)
+                    text =  f"{data} удален"
+                except IndexError:
+                    return "Произошла ошибка ("
+            with open("clients.json", "w") as read_file:
+                json.dump(clients, read_file, indent=4)
+                return text
+            return f"продукт {s} успешно удален из заказа"
+
+
+
+
+
+        else:
+            with open("clients.json", "r") as read_file:
+                clients = json.load(read_file)
+                data = int(data[1:])
+                try:
+                    s = clients[str(id)].pop(data-1)
+                except IndexError:
+                    return "Произошла ошибка, возможно Вы ввели неверный номер продукта"
+            with open("clients.json", "w") as read_file:
+                json.dump(clients, read_file, indent=4)
+            return f"продукт {s} успешно удален из заказа"
 
 
 # async def events_fomer(events_data: list):

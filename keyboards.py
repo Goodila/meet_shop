@@ -29,7 +29,6 @@ async def content_keyboard(string) -> InlineKeyboardMarkup:
     markup = InlineKeyboardMarkup(row_width=1)
     s = 'photo' if string is 'jpg' else 'menu'
     lst = glob(f'content/{s}/*.{string}')
-    print(lst)
     for i in lst:
         i = i.split('/')[-1].split('.')[0]
         button = InlineKeyboardButton(text=i, callback_data=f'{i}')
@@ -74,7 +73,30 @@ async def name_keyboard(string) -> InlineKeyboardMarkup:
     return markup
 
 
+async def order_keyboard(order: list) -> InlineKeyboardMarkup:
+    markup = InlineKeyboardMarkup(row_width=1)
+    order = order.split('\n')
+    if order == [''] or [] or None:
+        return False
+    for i in order:
+        button = InlineKeyboardButton(text=f'Удалить {i}', callback_data=f'remove {i}')
+        markup.add(button)
+    button = InlineKeyboardButton(text="Оставить в заказе", callback_data='add_to_order')
+    markup.add(button)
+    return markup
 
 
 
 
+
+    # markup = InlineKeyboardMarkup(row_width=1)
+    # order = order.split('\n')
+    # for prod in order:
+    
+    #     button = InlineKeyboardButton(text=f'удалить {prod}', callback_data=f'del_{prod}'),
+    #     markup.add(button)
+        
+    # button = InlineKeyboardButton(text='Оставить все в заказе', callback_data='order_confirm'),
+    # markup.add(button)
+    # print(markup)
+    # return markup

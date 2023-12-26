@@ -1,6 +1,6 @@
 import os
-from aiogram import types, Dispatcher, types
-from keyboards import start_keyboard, menu_keyboard, back_keyboard, admin_keyboard, name_keyboard, content_keyboard
+from aiogram import types, Dispatcher, types, filters
+from keyboards import start_keyboard, menu_keyboard, back_keyboard, admin_keyboard, name_keyboard, content_keyboard, order_keyboard
 from aiogram.dispatcher import FSMContext
 from states import Order, Change
 from funcs import get_config, Client
@@ -8,6 +8,7 @@ from asyncio import sleep
 # 6500743193:AAEv7C1MescqsmCa979OptxW3qOMPRs9i2s
 
 async def start(message: types.Message, state: FSMContext=None):
+    print('START START')
     if state:
         await state.finish()
     with open('content/menu/время доставки.txt', 'r', encoding='utf-8') as f:
@@ -27,8 +28,7 @@ async def start(message: types.Message, state: FSMContext=None):
     markup = await start_keyboard()
     photo = types.InputFile('content/photo/приветствие.jpg')
     await message.bot.send_photo(message.from_user.id, photo, caption=text, reply_markup=markup)
-    client = Client(message.from_user.id)
-    print(client.check()) 
+
 
 
 async def back_start(message: types.Message):
@@ -180,10 +180,13 @@ async def order_number(call: types.CallbackQuery, state: FSMContext):
 async def order_address(call: types.CallbackQuery, state: FSMContext):
     ''' запоминает address, спрашивает продукты '''
     await state.update_data(address=call.text)
+    markup = await order_keyboard(Client.get_order(call.from_user.id))
+    if markup == False:
+        markup = await back_keyboard(start=True)
     text = '''Укажите продукты, которые хотите заказать одним сообщением.
     не забудьте указать количество вес в граммах.'''
     await state.set_state(Order.Products.state)
-    markup = await back_keyboard(start=True)
+    # markup = await back_keyboard(start=True)
     await call.answer(text, reply_markup=markup)
 
 
@@ -216,25 +219,50 @@ async def order_time(call: types.CallbackQuery, state: FSMContext):
     await sleep(4)
     await state.finish()
     await start(call)
+    Client.del_product('data', call.from_user.id, in_order='clear')
 
 
-async def order_add(message: types.Message):
+async def order_add(message: types.Message, state: FSMContext):
     Client.record_product(message.text, str(message.from_user.id))
     text = f"продукт {message.text} добавлен к заказу, позже, Вы сможете убрать его из заказа, если захотите"
     await message.answer(text=text)
 
 
-async def order_get(message: types.Message):
+async def order_get(message: types.Message, state: FSMContext):
     text = f"{Client.get_order(message.from_user.id)}"
     if text == "":
         text = "Заказ пуст"
     await message.answer(text=text)
 
 
-async def order_del(message: types.Message):
+async def order_del(message: types.Message, state: FSMContext):
     text = Client.del_product(message.text, message.from_user.id)
     await message.answer(text=text)
 
+
+async def product_del(call: types.CallbackQuery, state: FSMContext):
+    text = Client.del_product(' '.join(call.data.split(" ")[1:]), call.from_user.id, in_order=True)
+    markup = await order_keyboard(Client.get_order(call.from_user.id))
+    if not markup:
+        markup = None 
+        await call.message.edit_text(text='Ваш заказ пуст. Впишите все продукты для заказа одним сообщением. Например (колбаса столичная 100 грамм, колбаса крмлевская 500 грамм)', reply_markup=markup)
+        await state.set_state(Order.Products.state)
+        return
+    await call.message.edit_text(text=text, reply_markup=markup)
+    await state.set_state(Order.Products.state)
+
+
+async def add_to_order(call: types.CallbackQuery, state: FSMContext):
+    ''' добавляет продукты из корзины, спрашивает время '''
+    order = Client.get_order(call.from_user.id)
+    await state.update_data(products=order)
+    text = '''Допишите продукты к заказу, если хотите.
+Если ничего дописывать не надо, просто отправьте точку. 
+Укажите продукты, которые хотите заказать одним сообщением.
+не забудьте указать количество вес в граммах.'''
+    await state.set_state(Order.Products.state)
+    markup = await back_keyboard(start=True)
+    await call.message.edit_text(text=text, reply_markup=markup)
 
 
 #РЕГИСТРАЦИЯ ХЕНДЛЕРОВ
@@ -242,7 +270,6 @@ def registration_handlers(dp: Dispatcher):
     #Commands
     dp.register_message_handler(start, commands=['start'])
     dp.register_message_handler(admin, commands=['admin'])
-
     #Callbacks
     dp.register_callback_query_handler(menu, text='menu')
     dp.register_callback_query_handler(start, text='start')
@@ -252,6 +279,8 @@ def registration_handlers(dp: Dispatcher):
     dp.register_callback_query_handler(change_photo, text='change_photo')
     dp.register_callback_query_handler(change_menu, text='change_menu')
     dp.register_callback_query_handler(contacts, text='contacts')
+    dp.register_callback_query_handler(add_to_order, text="add_to_order", state='*')
+    dp.register_callback_query_handler(product_del, filters.Text(startswith=["remove"]), state='*')
     dp.register_callback_query_handler(categories)
 #     #States
         #Name
