@@ -4,7 +4,6 @@ import logging
 from funcs import get_config
 # 1039316467, 1292810103
 # 6433841928:AAGALNsZt3pJlnc2lANgt5pXGy48afYKRyE
-
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from handlers import registration_handlers, set_commands
 from midl import registration_midl

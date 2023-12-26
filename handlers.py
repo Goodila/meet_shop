@@ -235,7 +235,9 @@ async def order_address(call: types.CallbackQuery, state: FSMContext):
 
 async def order_products(call: types.CallbackQuery, state: FSMContext):
     ''' запоминает products, спрашивает время '''
-    await state.update_data(products=call.text)
+    products = await state.get_data()
+    products['products'] += f'\n{call.text}'
+    await state.update_data(products=products['products'])
     with open('content/menu/время доставки.txt', 'r', encoding='utf-8') as f:
         time = f.read()
     text = f'''Укажите дату и время доставки.\n{time}'''
@@ -250,6 +252,7 @@ async def order_time(call: types.CallbackQuery, state: FSMContext):
     text = f'''Заказ отправлен менеджеру. Спсибо за заказ. С Вами свяжуться в ближайшее время.'''
     await call.answer(text)
     order = await state.get_data()
+    await state.update_data(time=call.text)
     order_text = f'''Поступил заказ!
 @{order['username']} {order['name']}
 {order['number']}
