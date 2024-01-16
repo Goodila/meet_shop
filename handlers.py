@@ -6,7 +6,6 @@ from aiogram.dispatcher import FSMContext
 from states import Order, Change
 from funcs import get_config, Client
 from asyncio import sleep
-# 6500743193:AAEv7C1MescqsmCa979OptxW3qOMPRs9i2s
 
 
 async def set_commands(bot):
@@ -185,20 +184,6 @@ async def start_delivery(call: types.CallbackQuery, state: FSMContext):
     await call.bot.delete_message(call.message.chat.id, call.message.message_id)
     await call.message.answer(text=text, reply_markup=markup)
     await state.set_state(Order.Name.state)
-#     if Client(id).check():
-#         name = Client(id).get_stuff('name')
-#         text = f'''Заказ на имя - {name}?'''
-#         markup = await name_keyboard('name')
-#         await call.message.answer(text=text, reply_markup=markup)
-#         await call.bot.delete_message(call.message.chat.id, call.message.message_id)
-#         return
-#     else:
-#         Client(id).record({})
-#         text = '''Для оставления заказа ответьте на следующие вопросы:\n
-#         *Укажите имя, на которое будет осуществлена доставка*'''
-#         markup = await back_keyboard(start=True)
-#         await call.bot.delete_message(call.message.chat.id, call.message.message_id)
-#         await call.message.answer(text=text, reply_markup=markup)
 
 
 async def order_name(call: types.CallbackQuery, state: FSMContext):
@@ -350,5 +335,6 @@ def registration_handlers(dp: Dispatcher):
         #Echoes
     dp.register_message_handler(order_del, text_startswith='-')
     dp.register_message_handler(order_get, text="заказ")
+    dp.register_message_handler(order_get, text="Заказ")
     dp.register_message_handler(order_add)
         

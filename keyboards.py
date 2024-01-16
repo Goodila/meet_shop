@@ -1,7 +1,5 @@
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup, KeyboardButton
-from aiogram.utils.callback_data import CallbackData
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from glob import glob
-# EventsCallback = CallbackData('event', 'action', 'id')
 
 
 async def start_keyboard() -> InlineKeyboardMarkup:
@@ -84,19 +82,3 @@ async def order_keyboard(order: list) -> InlineKeyboardMarkup:
     button = InlineKeyboardButton(text="Оставить в заказе", callback_data='add_to_order')
     markup.add(button)
     return markup
-
-
-
-
-
-    # markup = InlineKeyboardMarkup(row_width=1)
-    # order = order.split('\n')
-    # for prod in order:
-    
-    #     button = InlineKeyboardButton(text=f'удалить {prod}', callback_data=f'del_{prod}'),
-    #     markup.add(button)
-        
-    # button = InlineKeyboardButton(text='Оставить все в заказе', callback_data='order_confirm'),
-    # markup.add(button)
-    # print(markup)
-    # return markup
